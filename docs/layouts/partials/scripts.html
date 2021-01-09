@@ -1,4 +1,4 @@
-{{- if .IsHome }}
+{{- if or .IsHome (eq .Page.Layout "font") }}
 <script src="/assets/js/list.min.js"></script>
 <script>
   new List('icons-body', {
