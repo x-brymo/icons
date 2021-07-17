@@ -1,8 +1,8 @@
 # www.robotstxt.org
 
 {{- $isProduction := eq hugo.Environment "production" -}}
-{{- $isNetlify := eq (getenv "NETLIFY") "true" -}}
-{{- $allowCrawling := and (not $isNetlify) $isProduction -}}
+{{- $isCloudflarePages := eq (getenv "CF_PAGES") "1" -}}
+{{- $allowCrawling := and (not $isCloudflarePages) $isProduction -}}
 
 {{ if $allowCrawling }}
 # Allow crawling of all content
