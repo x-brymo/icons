@@ -1,6 +1,6 @@
 /* eslint-env browser */
 
-/* global ClipboardJS: false */
+/* global ClipboardJS: false, bootstrap: false */
 
 (function () {
   'use strict'
@@ -10,6 +10,18 @@
   [].slice.call(document.querySelectorAll('div.highlight'))
     .forEach(function (element) {
       element.insertAdjacentHTML('beforebegin', btnHtml)
+    })
+
+  document.querySelectorAll('.btn-clipboard')
+    .forEach(function (btn) {
+      var tooltipBtn = new bootstrap.Tooltip(btn)
+
+      btn.addEventListener('mouseleave', function () {
+        // Explicitly hide tooltip, since after clicking it remains
+        // focused (as it's a button), so tooltip would otherwise
+        // remain visible until focus is moved away
+        tooltipBtn.hide()
+      })
     })
 
   var clipboard = new ClipboardJS('.btn-clipboard', {
@@ -22,29 +34,37 @@
     var iconFirstChild = event.trigger.querySelector('.bi').firstChild
     var namespace = 'http://www.w3.org/1999/xlink'
     var originalXhref = iconFirstChild.getAttributeNS(namespace, 'href')
-    var originalTitle = event.trigger.title
+    //var originalTitle = event.trigger.title
 
-    event.clearSelection()
+    //event.clearSelection()
     iconFirstChild.setAttributeNS(namespace, 'href', originalXhref.replace('clipboard', 'check2'))
-    event.trigger.title = "Copied!"
+    //event.trigger.title = "Copied!"
+
+    var tooltipBtn = bootstrap.Tooltip.getInstance(event.trigger)
+
+    event.trigger.setAttribute('data-bs-original-title', 'Copied!')
+    tooltipBtn.show()
+
+    //event.trigger.setAttribute('data-bs-original-title', 'Copy to clipboard')
+    event.clearSelection()
 
     setTimeout(function () {
       iconFirstChild.setAttributeNS(namespace, 'href', originalXhref)
-      event.trigger.title = originalTitle
+      //event.trigger.title = originalTitle
+      event.trigger.setAttribute('data-bs-original-title', 'Copy to clipboard')
+      tooltipBtn.hide()
     }, 2000)
   })
 
-  clipboard.on('error', function () {
+  clipboard.on('error', function (event) {
     var modifierKey = /mac/i.test(navigator.userAgent) ? '\u2318' : 'Ctrl-'
     var fallbackMsg = 'Press ' + modifierKey + 'C to copy'
-    var errorElement = document.getElementById('copy-error-callout')
+    var tooltipBtn = bootstrap.Tooltip.getInstance(event.trigger)
 
-    if (!errorElement) {
-      return
-    }
+    event.trigger.setAttribute('data-bs-original-title', fallbackMsg)
+    tooltipBtn.show()
 
-    errorElement.classList.remove('d-none')
-    errorElement.insertAdjacentHTML('afterbegin', fallbackMsg)
+    event.trigger.setAttribute('data-bs-original-title', 'Copy to clipboard')
   });
 
   // Disable empty links in docs
