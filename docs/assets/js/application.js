@@ -5,7 +5,7 @@
 (function () {
   'use strict'
 
-  var btnHtml = '<div class="bd-clipboard"><button type="button" class="btn-clipboard" title="Copy to clipboard"><i class="bi bi-clipboard"></i></button></div>';
+  var btnHtml = '<div class="bd-clipboard"><button type="button" class="btn-clipboard" title="Copy to clipboard"><i class="bi bi-clipboard" aria-hidden="true"></i></button></div>';
 
   [].slice.call(document.querySelectorAll('div.highlight'))
     .forEach(function (element) {
